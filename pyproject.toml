@@ -1,0 +1,58 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "recon-agent"
+version = "1.0.0"
+description = "Authorized-scope reconnaissance orchestrator: scope enforced as a gate every action passes through, with a resumable run ledger and a per-target rate governor."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "vinzabe", email = "gabejar@usa.com" }]
+keywords = ["security", "recon", "osint", "authorized-testing", "pentest", "scope"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Information Technology",
+  "Topic :: Security",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-cov", "hypothesis>=6", "mypy>=1.8", "ruff>=0.5"]
+
+[project.scripts]
+reconagent = "reconagent.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/vinzabe/recon-agent"
+Issues = "https://github.com/vinzabe/recon-agent/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/reconagent"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "."]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+mypy_path = "src"
+packages = ["reconagent"]
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "ARG"]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests use fixtures and Protocol-shaped stubs whose signatures require
+# parameters they do not all use, and deliberately keep some throwaway
+# locals for clarity. These lints are noise in test code.
+"tests/*" = ["E402", "S101", "ARG001", "ARG002", "ARG005", "F841", "E702"]
